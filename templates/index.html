@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,34 +15,50 @@
             --red: #ef4444;
             --yellow: #f59e0b;
         }
-        
-        * { box-sizing: border-box; }
-        
-        body { 
-            background: var(--bg); 
-            color: var(--text); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            padding: 2rem; 
+
+        * {
+            box-sizing: border-box;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; }
-        
-        header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: baseline; 
-            margin-bottom: 2rem; 
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2rem;
             border-bottom: 1px solid #334155;
             padding-bottom: 1rem;
         }
-        
-        h1 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em; }
-        .timestamp { color: var(--text-muted); font-size: 0.9rem; font-family: monospace; }
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .timestamp {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-family: monospace;
+        }
 
         /* TWO COLUMN GRID LAYOUT */
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Creates 2 cols on wide screens */
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            /* Creates 2 cols on wide screens */
             gap: 1.5rem;
         }
 
@@ -51,11 +68,12 @@
             padding: 1.25rem;
             display: flex;
             flex-direction: column;
-            gap: 1rem; /* Space between Top and Bottom sections */
+            gap: 1rem;
+            /* Space between Top and Bottom sections */
             border: 1px solid #334155;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        
+
         .service-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -69,24 +87,59 @@
             align-items: center;
         }
 
-        .info-group { display: flex; flex-direction: column; }
-        .name { font-weight: 600; font-size: 1.1rem; color: var(--text); }
-        .url { font-size: 0.8rem; color: var(--text-muted); text-decoration: none; margin-top: 2px; }
-        .url:hover { color: var(--green); text-decoration: underline; }
+        .info-group {
+            display: flex;
+            flex-direction: column;
+        }
 
-        .uptime-group { display: flex; align-items: center; gap: 10px; }
+        .name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .url {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-top: 2px;
+        }
+
+        .url:hover {
+            color: var(--green);
+            text-decoration: underline;
+        }
+
+        .uptime-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .pie {
-            width: 36px; height: 36px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
         }
+
         .pie::after {
-            content: ""; position: absolute;
-            width: 26px; height: 26px;
-            background: var(--card-bg); border-radius: 50%;
+            content: "";
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: var(--card-bg);
+            border-radius: 50%;
         }
-        .val { font-weight: 700; font-size: 0.8rem; z-index: 1; }
+
+        .val {
+            font-weight: 700;
+            font-size: 0.8rem;
+            z-index: 1;
+        }
 
         /* --- BOTTOM SECTION: Bars + Status Badge --- */
         .card-bottom {
@@ -98,17 +151,25 @@
             border-top: 1px solid #334155;
         }
 
-        .history-wrapper { flex: 1; }
-        .history-label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 6px; }
-        
+        .history-wrapper {
+            flex: 1;
+        }
+
+        .history-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
         .bars {
             display: flex;
             align-items: flex-end;
-            gap: 3px; /* Tighter gap for squashed look */
+            gap: 3px;
+            /* Tighter gap for squashed look */
             height: 30px;
             width: 100%;
         }
-        
+
         .bar {
             flex: 1;
             background: #334155;
@@ -128,20 +189,24 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
             <h1>UIUC Services Monitor</h1>
             <div class="timestamp" id="lastCheck">Syncing...</div>
         </header>
-        
+
         <div id="grid" class="services-grid">
-            </div>
+        </div>
     </div>
 
+    <script type="application/json" id="initial-data">
+        {{ initial_data | tojson | safe }}
+    </script>
     <script>
         // Load initial data from Python
-        const INITIAL_DATA = {{ initial_data | tojson | safe }};
+        const INITIAL_DATA = JSON.parse(document.getElementById('initial-data').textContent);
 
         function getBarColor(ms, status) {
             if (status !== 'up') return 'var(--red)';
@@ -156,14 +221,14 @@
             }
 
             if (!data.sites) return;
-            
-            grid.innerHTML = ''; 
+
+            grid.innerHTML = '';
 
             // Sort alphabetically
             Object.keys(data.sites).sort().forEach(name => {
                 const site = data.sites[name];
                 const history = site.history || [];
-                
+
                 // --- Generate Bars (20 items) ---
                 let barsHtml = '';
                 for (let i = 0; i < 20; i++) {
@@ -212,9 +277,9 @@
                             <div class="status-badge" style="color: ${statusColor}" title="${site.current.error || ''}">
                                 ${statusText}
                             </div>
-                            ${site.current.status !== 'up' && site.current.error ? 
-                                `<div style="color: var(--red); font-size: 0.65rem; max-width: 140px; text-align: right; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${site.current.error}">${site.current.error}</div>` 
-                                : ''}
+                            ${site.current.status !== 'up' && site.current.error ?
+                        `<div style="color: var(--red); font-size: 0.65rem; max-width: 140px; text-align: right; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${site.current.error}">${site.current.error}</div>`
+                        : ''}
                         </div>
                     </div>
                 `;
@@ -230,8 +295,9 @@
             try {
                 const res = await fetch('/api/status');
                 updateDisplay(await res.json());
-            } catch(e) { console.error(e); }
+            } catch (e) { console.error(e); }
         }, 30000);
     </script>
 </body>
+
 </html>
