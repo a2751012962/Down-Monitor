@@ -17,13 +17,21 @@ CORS(app) # Enable CORS for all routes
 SITES = {
     'Self-Service': 'https://apps.uillinois.edu/selfservice',
     'Canvas': 'https://canvas.illinois.edu',
-    'UIUC Mail': 'https://mail.illinois.edu',
     'MyIllini': 'https://myillini.illinois.edu',
-    'NetFiles': 'https://netfiles.illinois.edu',
-    'Enterprise': 'https://www.enterprise.illinois.edu',
     'Course Explorer': 'https://courses.illinois.edu',
-    'UIUC Status': 'https://status.illinois.edu'
+    'UIUC Status': 'https://status.illinois.edu',
+    'Media Space': 'https://mediaspace.illinois.edu',
+    'APPS Directory': 'https://apps.uillinois.edu',
+    'Illinois.edu': 'https://illinois.edu',
+    'Student Affairs': 'https://studentaffairs.illinois.edu',
+    'Admissions': 'https://admissions.illinois.edu',
+    'University Housing': 'https://housing.illinois.edu',
+    'Library': 'https://library.illinois.edu',
+    'Technology Services': 'https://techservices.illinois.edu',
+    'Box': 'https://uofi.box.com',
+    'Webstore': 'https://webstore.illinois.edu'
 }
+
 
 status_history = {site: deque(maxlen=100) for site in SITES}
 current_status = {}
