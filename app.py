@@ -89,7 +89,27 @@ monitor_thread.start()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # Calculate stats exactly like in get_status
+    uptime_stats = {}
+    for site in SITES:
+        history = list(status_history[site])
+        if history:
+            up_count = sum(1 for h in history if h['status'] == 'up')
+            uptime_percentage = round((up_count / len(history)) * 100, 2)
+            uptime_stats[site] = uptime_percentage
+        else:
+            uptime_stats[site] = 0
+
+    # Create the data object
+    initial_data = {
+        'sites': current_status,
+        'last_check': last_check_time.isoformat() if last_check_time else None,
+        'uptime_stats': uptime_stats
+    }
+    
+    # Pass it to the template
+    return render_template('index.html', initial_data=initial_data)
+
 
 @app.route('/api/status')
 def get_status():
