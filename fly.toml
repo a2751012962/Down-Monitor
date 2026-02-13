@@ -1,15 +1,10 @@
-# fly.toml app configuration file generated for uiuc-status-monitor on 2026-02-13T23:47:57Z
+# fly.toml app configuration file generated for uiuc-status-monitor-thj8mg on 2026-02-13T23:52:12Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-<<<<<<< HEAD
 app = 'uiuc-status-monitor-thj8mg'
-primary_region = 'ord'
-=======
-app = 'uiuc-status-monitor'
-primary_region = 'ams'
->>>>>>> b55c91cf465f0176a5b11c8524d7ef6142863a7d
+primary_region = 'iad'
 
 [build]
 
@@ -25,4 +20,4 @@ primary_region = 'ams'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 256
+  memory_mb = 1024
