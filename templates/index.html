@@ -32,8 +32,8 @@
             justify-content: space-between; 
             align-items: baseline; 
             margin-bottom: 2rem; 
-            border-bottom: 1px solid #334155;
-            padding-bottom: 1rem;
+            border-bottom: 1px solid #334155; 
+            padding-bottom: 1rem; 
         }
         
         h1 { margin: 0; font-size: 1.5rem; font-weight: 700; }
@@ -61,7 +61,6 @@
         .group-header:hover { background: #475569; }
         .arrow { transition: transform 0.3s; font-size: 0.8rem; opacity: 0.7; }
         
-        /* Collapsed State */
         .group-header.collapsed { margin-bottom: 0; opacity: 0.8; }
         .group-header.collapsed .arrow { transform: rotate(-90deg); }
 
@@ -93,7 +92,6 @@
             border-color: #64748b;
         }
 
-        /* Top: Name + Pie */
         .card-top { display: flex; justify-content: space-between; align-items: center; }
         .info-group { display: flex; flex-direction: column; }
         .name { font-weight: 600; font-size: 1.1rem; display: block; }
@@ -114,7 +112,6 @@
         }
         .val { font-weight: 700; font-size: 0.85rem; z-index: 1; }
 
-        /* Bottom: History + Status */
         .card-bottom {
             display: flex; align-items: flex-end; justify-content: space-between;
             gap: 1rem; padding-top: 0.75rem; border-top: 1px solid #334155;
@@ -147,13 +144,10 @@
 
     <script>
         const INITIAL_DATA = {{ initial_data | tojson | safe }};
-        
-        // Use an object to track which groups are collapsed (Default: None)
         let collapsedState = {};
 
         function toggleGroup(groupName) {
             collapsedState[groupName] = !collapsedState[groupName];
-            // Re-render immediately with current data
             if (window.currentData) renderAll(window.currentData);
         }
 
@@ -173,13 +167,24 @@
 
             container.innerHTML = ''; 
 
-            // Iterate Groups
-            for (const [groupName, sites] of Object.entries(data.groups)) {
-                
+            // --- SORTING LOGIC ---
+            // 1. Get all group names
+            const groupNames = Object.keys(data.groups);
+            
+            // 2. Sort so 'UIUC Services' comes first, others follow
+            groupNames.sort((a, b) => {
+                if (a.includes('UIUC')) return -1; // Move UIUC to top
+                if (b.includes('UIUC')) return 1;
+                return a.localeCompare(b); // Alphabetical for others
+            });
+
+            // 3. Iterate through sorted names
+            groupNames.forEach(groupName => {
+                const sites = data.groups[groupName];
                 const isCollapsed = collapsedState[groupName] || false;
                 const arrowIcon = isCollapsed ? '▶' : '▼';
                 
-                // 1. Group Header
+                // Group Header
                 const section = document.createElement('div');
                 section.className = 'group-section';
                 
@@ -192,13 +197,12 @@
                 `;
                 section.appendChild(header);
 
-                // 2. Grid Container
+                // Grid Container
                 const grid = document.createElement('div');
                 grid.className = `group-grid ${isCollapsed ? 'hidden' : ''}`;
                 
                 if (!isCollapsed) {
                     sites.forEach(site => {
-                        // History Bars Logic
                         let barsHtml = '';
                         const history = site.history || [];
                         for (let i = 0; i < 20; i++) {
@@ -218,12 +222,10 @@
                             barsHtml += `<div class="bar" style="${style}" title="${tooltip}"></div>`;
                         }
 
-                        // Status Logic
                         const pieStyle = `background: conic-gradient(var(--green) 0% ${site.uptime}%, #334155 ${site.uptime}% 100%)`;
                         const statusColor = site.current.status === 'up' ? 'var(--green)' : 'var(--red)';
                         const statusText = site.current.status === 'up' ? site.current.time + 'ms' : 'DOWN';
 
-                        // Card HTML
                         const card = document.createElement('div');
                         card.className = 'service-card';
                         card.innerHTML = `
@@ -253,13 +255,11 @@
 
                 section.appendChild(grid);
                 container.appendChild(section);
-            }
+            });
         }
 
-        // Init
         if (INITIAL_DATA) renderAll(INITIAL_DATA);
 
-        // Loop
         setInterval(async () => {
             try {
                 const res = await fetch('/api/status');
