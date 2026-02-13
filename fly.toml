@@ -3,7 +3,7 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'uiuc-status-monitor'
+app = 'uiuc-status-monitor-thj8mg'
 primary_region = 'ord'
 
 [build]
