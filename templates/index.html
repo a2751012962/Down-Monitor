@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UIUC Services Status</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #13294b 0%, #e84a27 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .last-check {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .service-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .service-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #13294b;
+        }
+        
+        .status-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-up {
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+        
+        .status-down {
+            background: #ef4444;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .service-info {
+            color: #6b7280;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+        
+        .response-time {
+            font-weight: 600;
+            color: #10b981;
+        }
+        
+        .uptime {
+            display: inline-block;
+            background: #f3f4f6;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            margin-top: 8px;
+        }
+        
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.85em;
+            margin-top: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 UIUC Services Status</h1>
+            <p class="subtitle">Real-time monitoring of University of Illinois services</p>
+        </header>
+        
+        <div class="last-check" id="lastCheck">
+            Last checked: Loading...
+        </div>
+        
+        <div class="services-grid" id="servicesGrid">
+            <!-- Services will be loaded here -->
+        </div>
+        
+        <footer>
+            <p>Auto-refreshes every 30 seconds | Made for UIUC students</p>
+        </footer>
+    </div>
+
+    <script>
+        async function fetchStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                updateDisplay(data);
+            } catch (error) {
+                console.error('Error fetching status:', error);
+            }
+        }
+        
+        function updateDisplay(data) {
+            const grid = document.getElementById('servicesGrid');
+            const lastCheck = document.getElementById('lastCheck');
+            
+            // Update last check time
+            if (data.last_check) {
+                const date = new Date(data.last_check);
+                lastCheck.textContent = `Last checked: ${date.toLocaleString()}`;
+            }
+            
+            // Clear grid
+            grid.innerHTML = '';
+            
+            // Add service cards
+            for (const [name, info] of Object.entries(data.sites)) {
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                
+                const statusClass = info.status === 'up' ? 'status-up' : 'status-down';
+                const statusText = info.status === 'up' ? 'Operational' : 'Down';
+                
+                let infoHTML = '';
+                if (info.status === 'up') {
+                    infoHTML = `
+                        <div class="service-info">
+                            Response time: <span class="response-time">${info.response_time}ms</span>
+                        </div>
+                        <div class="uptime">
+                            Uptime: ${data.uptime_stats[name]}%
+                        </div>
+                    `;
+                } else {
+                    infoHTML = `
+                        <div class="error-msg">
+                            ${info.error || 'Service unavailable'}
+                        </div>
+                        <div class="uptime">
+                            Uptime: ${data.uptime_stats[name]}%
+                        </div>
+                    `;
+                }
+                
+                card.innerHTML = `
+                    <div class="service-header">
+                        <div class="service-name">${name}</div>
+                        <div class="status-indicator ${statusClass}"></div>
+                    </div>
+                    <div class="service-info">${statusText}</div>
+                    ${infoHTML}
+                `;
+                
+                grid.appendChild(card);
+            }
+        }
+        
+        // Initial fetch
+        fetchStatus();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(fetchStatus, 30000);
+    </script>
+</body>
+</html>
