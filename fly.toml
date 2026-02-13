@@ -1,23 +1,28 @@
-# fly.toml app configuration file generated for uiuc-status-monitor on 2026-02-13T15:07:07-06:00
+# fly.toml app configuration file generated for uiuc-status-monitor on 2026-02-13T23:47:57Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
+<<<<<<< HEAD
 app = 'uiuc-status-monitor-thj8mg'
 primary_region = 'ord'
+=======
+app = 'uiuc-status-monitor'
+primary_region = 'ams'
+>>>>>>> b55c91cf465f0176a5b11c8524d7ef6142863a7d
 
 [build]
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = false
+  auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 1
+  min_machines_running = 0
   processes = ['app']
 
 [[vm]]
-  memory = '512mb'
+  memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 512
+  memory_mb = 256
