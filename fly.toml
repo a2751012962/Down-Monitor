@@ -4,7 +4,7 @@
 #
 
 # 应用名称 (必须全局唯一)
-app = 'uiuc-status-monitor-thj8mg'
+app = 'uiuc-status-monitor'
 # 部署区域 (iad = Ashburn, Virginia，靠近 UIUC)
 primary_region = 'iad'
 
