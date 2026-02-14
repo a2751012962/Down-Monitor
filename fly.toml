@@ -4,7 +4,7 @@
 #
 
 # 应用名称 (必须全局唯一)
-app = 'down-monitor-w-ua7a'
+app = 'down-monitor-eulr9g'
 # 部署区域 (iad = Ashburn, Virginia，靠近 UIUC)
 primary_region = 'iad'
 
@@ -16,7 +16,7 @@ primary_region = 'iad'
   force_https = true   # 强制重定向 HTTP 到 HTTPS
   auto_stop_machines = false # 禁止自动停止 (必须保持运行以维持内存数据)
   auto_start_machines = true # 允许自动启动
-  min_machines_running = 1   # 始终保持至少 1 个实例运行 (防止数据丢失)
+  min_machines_running = 2   # 始终保持至少 1 个实例运行 (防止数据丢失)
   processes = ['app']
 
 [[vm]]
