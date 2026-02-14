@@ -91,24 +91,61 @@ def save_history():
 # Load immediately on start
 load_history()
 
+# Global session for connection reuse
+session = requests.Session()
+session.headers.update({
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
+    'Cache-Control': 'max-age=0'
+})
+
 def check_website(name, url):
     try:
         start_time = time.time()
-        headers = {'User-Agent': 'UIUC-Status-Monitor/1.0'}
-        # Shorter timeout to prevent hanging, verify=False to handle UIUC internal certs
-        response = requests.get(url, timeout=10, headers=headers, verify=False)
+        
+        # Increase timeout to 15 seconds & allow redirects
+        # Verify=False is already set for Media Space compatibility
+        response = session.get(url, timeout=15, verify=False, allow_redirects=True)
+        
         response_time = round((time.time() - start_time) * 1000)
         
+        # Consider 403 as potentially UP if it's just blocking bots, but ideally we want 200
+        # For now, stick to standard status checks
+        status = 'up' if response.status_code in [200, 301, 302] else 'down'
+        
+        if response.status_code == 403:
+             # If 403, it might be WAF blocking. Let's mark as down but log it distinctively
+             status = 'down'
+             error_msg = f"403 Forbidden (WAF Block)"
+             return {
+                'status': status,
+                'time': response_time,
+                'code': response.status_code,
+                'error': error_msg,
+                'timestamp': datetime.now().isoformat()
+            }
+
         return {
-            'status': 'up',
+            'status': status,
             'time': response_time,
-            'code': response.status_code
+            'code': response.status_code,
+            'timestamp': datetime.now().isoformat()
         }
-    except requests.RequestException as e:
+    except Exception as e:
+        logger.error(f"Error checking {name}: {e}")
         return {
             'status': 'down',
+            'time': 0,
             'error': str(e),
-            'time': 0
+            'timestamp': datetime.now().isoformat()
         }
 
 def update_loop():
