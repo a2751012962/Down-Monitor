@@ -9,6 +9,14 @@ import logging
 import json
 import os
 
+import logging
+import json
+import os
+import urllib3
+
+# Suppress InsecureRequestWarning
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -87,8 +95,8 @@ def check_website(name, url):
     try:
         start_time = time.time()
         headers = {'User-Agent': 'UIUC-Status-Monitor/1.0'}
-        # Shorter timeout to prevent hanging
-        response = requests.get(url, timeout=5, headers=headers)
+        # Shorter timeout to prevent hanging, verify=False to handle UIUC internal certs
+        response = requests.get(url, timeout=10, headers=headers, verify=False)
         response_time = round((time.time() - start_time) * 1000)
         
         return {

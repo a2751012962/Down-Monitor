@@ -4,7 +4,11 @@
 #
 
 app = 'uiuc-status-monitor-thj8mg'
+<<<<<<< HEAD
 primary_region = 'iad'
+=======
+primary_region = 'ord'
+>>>>>>> fd7832d (Fix Media Space SSL verification error)
 
 [build]
 
