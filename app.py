@@ -64,7 +64,11 @@ session.headers.update({
     'Sec-Fetch-Mode': 'navigate',
     'Sec-Fetch-Site': 'none',
     'Sec-Fetch-User': '?1',
-    'Cache-Control': 'max-age=0'
+    'Cache-Control': 'max-age=0',
+    'Referer': 'https://www.google.com/',
+    'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+    'Sec-Ch-Ua-Mobile': '?0',
+    'Sec-Ch-Ua-Platform': '"Windows"'
 })
 
 def check_website(name, url):
